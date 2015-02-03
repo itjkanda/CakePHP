@@ -51,6 +51,5 @@ class MembersController extends AppController {
 
 	// 会員登録系
 	public function join() {
-
 	}
 }
