@@ -63,18 +63,18 @@ class MembersController extends AppController {
 
 			$data = $this->request->data;
 			// モデルにデータをセット
-			$this->Member->set($this->request->data);
+			$this->Member->set($data);
 			// 書き直し用にsessionに保存
 			$this->Session->write('data', $data);
 
 			// バリデーション
 			if ($this->Member->validates()) {
 				// 変数をsessionにセット
-				$this->Session->write('data', $data);
 				$this->redirect('/join/check');
 			} else {
 			}
 		}
+		$this->Session->delete('data');
 	}
 
 	public function check() {

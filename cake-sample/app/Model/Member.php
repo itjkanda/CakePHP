@@ -58,12 +58,13 @@ class Member extends AppModel {
 
   );
 
+  // メールアドレスの重複チェック
   public function duplicateCheck($member) {
 
     // メールアドレスを検索
     $count = $this->find('count',
       array(
-        'conditions' => array('Member.email' == $member['email'])
+        'conditions' => array('email' => $member['email'])
       )
     );
 
