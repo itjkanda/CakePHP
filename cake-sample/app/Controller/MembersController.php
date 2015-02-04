@@ -67,14 +67,18 @@ class MembersController extends AppController {
 			// 書き直し用にsessionに保存
 			$this->Session->write('data', $data);
 
+			// 画像のアップロード
+			$path = IMAGES;
+			$image = $this->request->data['Member']['picture_tmp'];
+			move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
+			$this->Session->write('img_name', $image['name']);
+			$this->request->data['Member']['picture'] = $image['name'];
+			$data = $this->request->data;
+
 			// バリデーション
 			if ($this->Member->validates()) {
 				// 変数をsessionにセット
-				// 画像のアップロード
-				$path = IMAGES;
-				$image = $this->request->data['Member']['image'];
-				$this->Session->write('img_name', $image['name']);
-				move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
+				$this->Session->write('data', $data);
 				$this->redirect('/join/check');
 			}
 
@@ -86,7 +90,6 @@ class MembersController extends AppController {
 
 		// sessionからデータをセット
 		$this->set('data', $this->Session->read('data'));
-		debug($this->Session->read('img_name'));
 		$this->set('img_name', $this->Session->read('img_name'));
 		if ($this->request->is('post')) {
 			$this->redirect('/join/complete');
@@ -97,9 +100,9 @@ class MembersController extends AppController {
 	public function complete() {
 
 		if ($this->Session->check('data')) {
-
 			// session変数の代入
 			$this->request->data = $this->Session->read('data');
+			echo"<pre>";var_dump($this->request->data);echo "</pre>";
 			$this->Member->save($this->request->data);
 		}
 

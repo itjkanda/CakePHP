@@ -12,9 +12,9 @@
   <dd>
 <?php echo $this->Form->password('Member.password', array('default' => $data['Member']['password'])); ?>
 <?php echo $this->Form->error('Member.password'); ?></dd>
-  <dt><?php echo $this->Form->label('Member.image', '写真など'); ?></dt>
-  <dd><?php echo $this->Form->file('Member.image'); ?>
-<?php echo $this->Form->error('Member.image'); ?></dd>
+  <dt><?php echo $this->Form->label('Member.picture', '写真など'); ?></dt>
+  <dd><?php echo $this->Form->file('Member.picture_tmp'); ?>
+<?php echo $this->Form->error('Member.picture_tmp'); ?></dd>
 </dl>
 <div><?php echo $this->Form->submit('入力内容を確認する'); ?></div>
 <?php echo $this->Form->end(); ?>
