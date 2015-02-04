@@ -30,4 +30,43 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class Member extends AppModel {
+
+  public $validate = array(
+
+    'name' => array(
+      'rule' => 'notEmpty',
+      'required' => true,
+      'allowEmpty' => false,
+      'message' => '※ユーザー名を入力してください'
+    ),
+    'email' => array(
+      'rule' => 'notEmpty',
+      'required' => true,
+      'allowEmpty' => false,
+      'message' => '※メールアドレスを入力してください'
+    ),
+    'email' => array(
+      'rule' => 'duplicateCheck',
+      'message' => '※重複しているメールアドレスです'
+    ),
+    'password' => array(
+      'rule' => array('minLength', 4),
+      'required' => true,
+      'allowEmpty' => false,
+      'message' => '※パスワードは4文字以上で入力してください'
+    )
+
+  );
+
+  public function duplicateCheck(email) {
+
+    // メールアドレスを検索
+    $count = $this->Member->find('count',
+      'conditions' => array('Member.email' = email)
+    );
+
+    return $count == 0;
+
+  }
+
 }

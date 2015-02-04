@@ -30,6 +30,8 @@ App::uses('AppController', 'Controller');
  */
 class MembersController extends AppController {
 
+	var $components = array('Session');
+
 /**
  * This controller does not use a model
  *
@@ -45,11 +47,57 @@ class MembersController extends AppController {
  *	or MissingViewException in debug mode.
  */
 
+	public function beforeFilter() {
+
+	}
+
 	public function index() {
 
 	}
 
 	// 会員登録系
 	public function join() {
+		$this->set('data', $this->Session->read('data'));
+		// postされた場合
+		if ($this->request->is('post')) {
+
+			$data = $this->request->data;
+			// モデルにデータをセット
+			$this->Member->set($this->request->data);
+			// 書き直し用にsessionに保存
+			$this->Session->write('data', $data);
+
+			// バリデーション
+			if ($this->Member->validates()) {
+				// 変数をsessionにセット
+				$this->Session->write('data', $data);
+				$this->redirect('/join/check');
+			} else {
+			}
+		}
 	}
+
+	public function check() {
+
+		// sessionからデータをセット
+		$this->set('data', $this->Session->read('data'));
+		if ($this->request->is('post')) {
+			$this->redirect('/join/complete');
+		}
+
+	}
+
+	public function complete() {
+
+		if ($this->Session->check('data')) {
+
+			$this->request->data = $this->Session->read('data');
+			$this->Member->save($this->request->data);
+
+		}
+		// 画像のアップロード
+
+
+	}
+
 }

@@ -33,7 +33,9 @@
 /*
  * Member
  */
-  Router::connect('/join/*', array('controller' => 'members', 'action' => 'join'));
+  Router::connect('/join/regist', array('controller' => 'members', 'action' => 'join'));
+  Router::connect('/join/check', array('controller' => 'members', 'action' => 'check'));
+  Router::connect('/join/complete', array('controller' => 'members', 'action' => 'complete'));
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on
