@@ -1,5 +1,5 @@
 <p>次のフォームに必要事項をご記入ください。</p>
-<?php echo $this->Form->create('Member', array('type' => 'post')); ?>
+<?php echo $this->Form->create('Member', array('type' => 'post','enctype' => 'multipart/form-data')); ?>
 
 <dl>
   <dt><?php echo $this->Form->label('Member.name', 'ニックネーム'); ?></dt>

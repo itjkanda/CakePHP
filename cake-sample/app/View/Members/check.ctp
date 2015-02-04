@@ -9,7 +9,7 @@
   <dt>パスワード</dt>
   <dd><?php echo $data['Member']['password']; ?></dd>
   <dt>写真など</dt>
-  <dd><img src="<?php echo $data['Member']['image']; ?>" /></dd>
+  <dd><?php echo $this->Html->image($img_name); ?></dd>
 </dl>
 <div>
   <?php echo $this->Html->link('書き直す', array('controller' => 'members', 'action' => 'join')); ?>

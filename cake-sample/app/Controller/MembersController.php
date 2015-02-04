@@ -70,9 +70,14 @@ class MembersController extends AppController {
 			// バリデーション
 			if ($this->Member->validates()) {
 				// 変数をsessionにセット
+				// 画像のアップロード
+				$path = IMAGES;
+				$image = $this->request->data['Member']['image'];
+				$this->Session->write('img_name', $image['name']);
+				move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
 				$this->redirect('/join/check');
-			} else {
 			}
+
 		}
 		$this->Session->delete('data');
 	}
@@ -81,6 +86,8 @@ class MembersController extends AppController {
 
 		// sessionからデータをセット
 		$this->set('data', $this->Session->read('data'));
+		debug($this->Session->read('img_name'));
+		$this->set('img_name', $this->Session->read('img_name'));
 		if ($this->request->is('post')) {
 			$this->redirect('/join/complete');
 		}
@@ -91,11 +98,10 @@ class MembersController extends AppController {
 
 		if ($this->Session->check('data')) {
 
+			// session変数の代入
 			$this->request->data = $this->Session->read('data');
 			$this->Member->save($this->request->data);
-
 		}
-		// 画像のアップロード
 
 
 	}
