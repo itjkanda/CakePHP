@@ -30,4 +30,7 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class Post extends AppModel {
+
+
+
 }

@@ -69,6 +69,7 @@ class MembersController extends AppController {
 
 			// 画像のアップロード
 			$path = IMAGES;
+			// 送信された画像を取得
 			$image = $this->request->data['Member']['picture_tmp'];
 			move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
 			$this->Session->write('img_name', $image['name']);
