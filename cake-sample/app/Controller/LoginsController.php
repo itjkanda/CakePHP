@@ -30,6 +30,10 @@ App::uses('AppController', 'Controller');
  */
 class LoginsController extends AppController {
 
+	public $components = array(
+		'Cookie'
+	);
+
 /**
  * This controller does not use a model
  *
@@ -46,13 +50,59 @@ class LoginsController extends AppController {
  */
 	public function index() {
 
+		// cookieのチェック
+		if ($this->Cookie->check('email')) {
+
+			// Cookieから値を取得
+			$data['Login']['email'] = $this->Cookie->read('email');
+			$data['Login']['password'] = $this->Cookie->read('password');
+
+			// ログインチェック
+			$memberData = $this->Login->checkLogin($data['Login']['email'], $data['Login']['password']);
+
+			if ($memberData) {
+				// ログイン通過
+
+				// Sessionの更新
+				$this->Session->write('user_id', $memberData['member_id']);
+				$this->Session->write('loginTime', time());
+
+				// Cookieの更新
+				$this->Cookie->write('email', $data['Login']['email'], false, '+2 weeks');
+				$this->Cookie->write('password', $data['Login']['password'], false, '+2 weeks');
+
+				$this->redirect('/posts/index');
+
+			} else {
+				$this->request->data['Login']['password'] = '';
+				$this->set('error', 'Cookieみたけどログインできなかったお');
+			}
+		}
+
 		if ($this->request->is('post')) {
 
+			// データの取得
 			$data = $this->request->data;
-			if ($this->Login->loginCheck($data['Login']['email'], $data['Login']['password'])) {
-				echo 'ログインできた';
+			// ログインチェック
+			$memberData = $this->Login->checkLogin($data['Login']['email'], $data['Login']['password']);
+
+			if ($memberData) {
+				// ログイン通過
+
+				$this->Session->write('user_id', $memberData['member_id']);
+				$this->Session->write('loginTime', time());
+				// 自動ログインにチェックがあった場合
+				if ($data['Login']['autoLogin']) {
+					$this->Cookie->write('email', $data['Login']['email'], false, '+2 weeks');
+					$this->Cookie->write('password', $data['Login']['password'], false, '+2 weeks');
+				}
+
+				$this->redirect('/posts/index');
+
 			} else {
 				echo 'ログインできてない';
+				$this->request->data['Login']['password'] = '';
+				$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
 			}
 
 		}

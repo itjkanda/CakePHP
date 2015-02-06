@@ -20,6 +20,7 @@
  */
 
 App::uses('Model', 'Model');
+App::import('Component', 'Cookie');
 
 /**
  * Application model for Cake.
@@ -31,11 +32,13 @@ App::uses('Model', 'Model');
  */
 class Login extends AppModel {
 
+  // public $cookie = new CookieComponent();
+
   public $useTable = 'members';
 
   // ログインチェック用関数
-  public function loginCheck($email, $password) {
-    $cnt = $this->find('all',
+  public function checkLogin($email, $password) {
+    $memberData = $this->find('all',
       array(
         'conditions' => array(
           'email' => $email,
@@ -43,7 +46,7 @@ class Login extends AppModel {
         )
       )
     );
-    return $cnt;
+    return $memberData[0]['Login'];
   }
 
 }

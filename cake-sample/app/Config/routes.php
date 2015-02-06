@@ -42,6 +42,11 @@
  */
   Router::connect('/login', array('controller' => 'logins', 'action' => 'index'));
 
+/*
+ * Post
+ */
+  Router::connect('/post', array('controller' => 'posts', 'action' => 'index'));
+
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.
