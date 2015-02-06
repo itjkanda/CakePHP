@@ -102,7 +102,6 @@ class MembersController extends AppController {
 		if ($this->Session->check('data')) {
 			// session変数の代入
 			$this->request->data = $this->Session->read('data');
-			echo"<pre>";var_dump($this->request->data);echo "</pre>";
 			$this->Member->save($this->request->data);
 		}
 

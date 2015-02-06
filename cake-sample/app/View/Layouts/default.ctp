@@ -4,7 +4,7 @@
     <?php echo $this->Html->charset("utf-8");?>
     <?php echo $this->Html->css('./style.css'); ?>
     <link rel="stylesheet" href="./style.css">
-    <title>CakePHP test</title>
+    <title><?php echo $title_for_layout; ?></title>
 </head>
 <body>
 
