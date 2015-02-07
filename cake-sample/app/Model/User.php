@@ -19,7 +19,8 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-App::uses('Model', 'Model');
+App::uses('AppModel', 'Model');
+App::uses('AuthComponent', 'Controller/Component');
 
 /**
  * Application model for Cake.
@@ -29,7 +30,22 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
-class Member extends AppModel {
+class User extends AppModel {
+
+  public $useTable = 'users';
+
+  // ログインチェック用関数
+  public function checkLogin($email, $password) {
+    $userData = $this->find('all',
+      array(
+        'conditions' => array(
+          'email' => $email,
+          'password' => $password
+        )
+      )
+    );
+    return $userData[0]['User'];
+  }
 
   public $validate = array(
 
@@ -59,12 +75,12 @@ class Member extends AppModel {
   );
 
   // メールアドレスの重複チェック
-  public function duplicateCheck($member) {
+  public function duplicateCheck($user) {
 
     // メールアドレスを検索
     $count = $this->find('count',
       array(
-        'conditions' => array('email' => $member['email'])
+        'conditions' => array('email' => $user['email'])
       )
     );
 
