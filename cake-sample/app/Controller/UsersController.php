@@ -40,11 +40,12 @@ class UsersController extends AppController {
 		'Session',
 		'Auth' => array(
 			'loginRedirect' => array('Controller' => 'Posts', 'action' => 'index'),
+			'logoutRedirect' => array('Controller' => 'Users', 'action' => 'login'),
 			'authenticate' => array(
 				'Form' => array(
+					'userModel' => 'User',
 					'fields' => array(
-						'username' => 'email',
-						'password' => 'password'
+						'username' => 'email'
 					),
 					'passwordHasher' => array(
 						'className' => 'Simple',
@@ -128,11 +129,19 @@ class UsersController extends AppController {
 	public function complete() {
 
 		if ($this->Session->check('data')) {
-			// session変数の代入
+
+			// hasherのインスタンス化
 			$passwordHasher = new SimplePasswordHasher();
+
+			// session変数の代入
 			$this->request->data = $this->Session->read('data');
+
+			// passwordのhash化
 			$this->request->data['User']['password'] = $passwordHasher->hash($this->request->data['User']['password']);
+
+			// データをDBに保存
 			$this->User->save($this->request->data);
+
 		}
 
 	}
@@ -149,8 +158,7 @@ class UsersController extends AppController {
 			// ログインチェック
 			if ($this->Auth->login()) {
 				// ログイン通過
-				var_dump('hoge');
-				$this->redirect($this->Auth->redirect());
+				// $this->redirect($this->Auth->redirect());
 
 				// Sessionの更新
 				$this->Session->write('loginTime', time());
@@ -173,14 +181,19 @@ class UsersController extends AppController {
 			// データの取得
 			$data = $this->request->data;
 
-			debug($this->Auth->login());
-			// ここ通らない ログインチェック
-			if ($this->Auth->login()) {
+			// 入力されたpasswordのhash化
+			// →これbeforesaveに書いたほうがスッキリする？
+			// $this->request->data['User']['password'] = $this->User->hashPassword($this->request->data['User']['password']);
+
+			// ログインチェック
+			if ($this->Auth->login($this->request->data)) {
+
 				// ログイン通過
-				var_dump('hoge');
+				// echo 'login successed';
+
 				// sessionに保存
-				$this->Session->write('user_id', $userData['member_id']);
-				$this->Session->write('loginTime', time());
+				// $this->Session->write('user_id', $data['member_id']);
+				// $this->Session->write('loginTime', time());
 				// 自動ログインにチェックがあった場合
 				if ($data['User']['autoLogin']) {
 					$this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');

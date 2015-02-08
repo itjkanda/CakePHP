@@ -46,6 +46,14 @@ class User extends AppModel {
     );
     return $userData[0]['User'];
   }
+  // sessionにハッシュ化したパスワードを保存するのってどうなんだろ
+
+  public function hashPassword($password) {
+
+    $hashedPassword = AuthComponent::password($password);
+    return $hashedPassword;
+
+  }
 
   public $validate = array(
 
