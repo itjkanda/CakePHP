@@ -35,7 +35,7 @@ class PostsController extends AppController {
  *
  * @var array
  */
-	public $uses = array();
+	public $uses = array('Post', 'User');
 
 /**
  * Displays a view
@@ -45,6 +45,14 @@ class PostsController extends AppController {
  *	or MissingViewException in debug mode.
  */
 	public function index() {
+
+		if ($this->request->is('post')) {
+
+			$data = $this->request->data;
+			$data['Post']['user_id'] = $this->Session->read('user_id');
+			$this->Post->save($data);
+
+		}
 
 	}
 

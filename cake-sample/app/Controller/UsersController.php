@@ -158,9 +158,20 @@ class UsersController extends AppController {
 			// ログインチェック
 			if ($this->Auth->login()) {
 				// ログイン通過
-				// $this->redirect($this->Auth->redirect());
+
+				// emailからmember_idを取得
+				// ここの汚さセンスゼロ
+				$userData = $this->Auth->user();
+				$user_id = $this->User->find('all',
+					array(
+						'fields' => array('User.member_id'),
+						'conditions' => array('User.email' => $userData['User']['email'])
+					)
+				);
+				$user_id = $user_id[0]['User']['member_id'];
 
 				// Sessionの更新
+				$this->Session->write('user_id', $user_id);
 				$this->Session->write('loginTime', time());
 
 				// Cookieの更新
