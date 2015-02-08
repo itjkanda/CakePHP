@@ -81,7 +81,7 @@ class UsersController extends AppController {
 
 		if ($this->Session->check('data')){
 			$this->set('data', $this->Session->read('data'));
-		}
+		} else {}
 		// postされた場合
 		if ($this->request->is('post')) {
 
@@ -209,6 +209,17 @@ class UsersController extends AppController {
 			}
 
 		}
+
+	}
+
+	public function logout() {
+
+		$this->Auth->logout();
+
+		// session削除
+		$this->Session->destroy();
+
+		$this->redirect(array('action' => 'login'));
 
 	}
 
