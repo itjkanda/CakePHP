@@ -33,6 +33,7 @@ App::uses('AuthComponent', 'Controller/Component');
 class User extends AppModel {
 
   public $useTable = 'users';
+  public $primaryKey = 'user_id';
 
   // ログインチェック用関数
   public function checkLogin($email, $password) {

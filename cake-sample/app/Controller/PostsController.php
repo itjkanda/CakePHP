@@ -46,17 +46,19 @@ class PostsController extends AppController {
  */
 	public function index() {
 
+		// 投稿時の処理
 		if ($this->request->is('post')) {
 
+			// データの取得
 			$data = $this->request->data;
+
+			// 送信データにsessionからユーザーidを拝借
 			$data['Post']['user_id'] = $this->Session->read('user_id');
 			$this->Post->save($data);
 
 		}
 
-	}
-
-	public function view() {
+		$postData = $this->Post->find('all');
 
 	}
 
