@@ -31,32 +31,6 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
  */
 class UsersController extends AppController {
 
-	public function beforeFilter() {
-		// parent::beforeFilter();
-		$this->Auth->allow('join', 'check', 'complete');
-	}
-
-	public $components = array(
-		'Session',
-		'Auth' => array(
-			'loginRedirect' => array('Controller' => 'Posts', 'action' => 'index'),
-			'logoutRedirect' => array('Controller' => 'Users', 'action' => 'login'),
-			'authenticate' => array(
-				'Form' => array(
-					'userModel' => 'User',
-					'fields' => array(
-						'username' => 'email'
-					),
-					'passwordHasher' => array(
-						'className' => 'Simple',
-						'hashType' => 'md5'
-					)
-				)
-			)
-		),
-		'Cookie'
-	);
-
 /**
  * This controller does not use a model
  *
@@ -231,6 +205,10 @@ class UsersController extends AppController {
 		$this->Session->destroy();
 
 		$this->redirect(array('action' => 'login'));
+
+	}
+
+	public function sample() {
 
 	}
 

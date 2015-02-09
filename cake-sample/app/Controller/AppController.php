@@ -32,6 +32,32 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
+  public function beforeFilter() {
+    // parent::beforeFilter();
+    $this->Auth->allow('join', 'check', 'complete');
+  }
+
+  public $components = array(
+    'Session',
+    'Auth' => array(
+      'loginRedirect' => array('Controller' => 'Posts', 'action' => 'index'),
+      'logoutRedirect' => array('Controller' => 'Users', 'action' => 'login'),
+      'authenticate' => array(
+        'Form' => array(
+          'userModel' => 'User',
+          'fields' => array(
+            'username' => 'email'
+          ),
+          'passwordHasher' => array(
+            'className' => 'Simple',
+            'hashType' => 'md5'
+          )
+        )
+      )
+    ),
+    'Cookie'
+  );
+
   public $component = array(
     'Auth',
     'Session'
