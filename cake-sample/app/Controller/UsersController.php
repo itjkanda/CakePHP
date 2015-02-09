@@ -174,7 +174,6 @@ class UsersController extends AppController {
 			if ($this->Auth->login($this->request->data)) {
 
 				// ログイン通過
-				// echo 'login successed';
 
 				// sessionに保存
 				// $this->Session->write('user_id', $data['member_id']);
@@ -188,7 +187,7 @@ class UsersController extends AppController {
 				$this->redirect('/posts/index');
 
 			} else {
-				echo 'ログインできてない';
+				// ログイン通ってない
 				$this->request->data['User']['password'] = '';
 				$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
 			}

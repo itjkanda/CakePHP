@@ -46,6 +46,14 @@ class PostsController extends AppController {
  */
 	public function index() {
 
+		// 投稿データの取得
+		$postData = $this->Post->find('all',
+			array(
+				'order' => array('Post.post_id DESC')
+			)
+		);
+		$this->set('postData', $postData);
+
 		// 投稿時の処理
 		if ($this->request->is('post')) {
 
@@ -54,11 +62,13 @@ class PostsController extends AppController {
 
 			// 送信データにsessionからユーザーidを拝借
 			$data['Post']['user_id'] = $this->Session->read('user_id');
+
 			$this->Post->save($data);
 
-		}
+			// 投稿の重複防止
+			$this->redirect('/posts/index');
 
-		$postData = $this->Post->find('all');
+		}
 
 	}
 
