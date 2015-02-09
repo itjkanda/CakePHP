@@ -14,5 +14,9 @@
   <p class="day"><?php echo $data['Post']['created']; ?></p>
 </div>
 <?php endforeach; ?>
+<?php echo $this->Paginator->counter(); ?><br />
+<?php echo $this->Paginator->prev('前へ'); ?>
+<?php echo $this->Paginator->numbers(); ?>
+<?php echo $this->Paginator->next('次へ'); ?>
 </div>
 <?php echo $this->Html->link('ログアウト', '/users/logout'); ?>

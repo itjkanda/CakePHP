@@ -31,6 +31,7 @@ App::uses('Model', 'Model');
  */
 class Post extends AppModel {
 
+  public $primaryKey = 'post_id';
   public $belongsTo = array(
     'User' => array(
       'foreignKey' => 'user_id'

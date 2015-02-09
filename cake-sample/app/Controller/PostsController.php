@@ -37,6 +37,22 @@ class PostsController extends AppController {
  */
 	public $uses = array('Post', 'User');
 
+	public $paginate = array(
+		'limit' => 5,
+		'order' => array(
+			'Post.created' => 'DESC'
+		)
+	);
+
+	public function getData() {
+		$data = $this->paginate('Post',
+			array(
+				'Post.post_id not' => null
+			)
+		);
+		return $data;
+	}
+
 /**
  * Displays a view
  *
@@ -47,12 +63,16 @@ class PostsController extends AppController {
 	public function index() {
 
 		// 投稿データの取得
-		$postData = $this->Post->find('all',
-			array(
-				'order' => array('Post.post_id DESC')
-			)
-		);
-		$this->set('postData', $postData);
+
+		// paginateコンポーネント使わない版
+		// $postData = $this->Post->find('all',
+		// 	array(
+		// 		'order' => array('Post.post_id DESC')
+		// 	)
+		// );
+
+		// paginateコンポーネント使う版
+		$this->set('postData', $this->getData());
 
 		// 投稿時の処理
 		if ($this->request->is('post')) {
