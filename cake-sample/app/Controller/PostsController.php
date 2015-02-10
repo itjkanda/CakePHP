@@ -58,6 +58,7 @@ class PostsController extends AppController {
 
 		// 投稿データの取得
 		$this->set('postData', $this->getData());
+		$this->set('sessionUserId', $this->Session->read('user_id'));
 
 		// 投稿時の処理
 		if ($this->request->is('post')) {
