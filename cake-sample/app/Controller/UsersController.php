@@ -31,20 +31,7 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
  */
 class UsersController extends AppController {
 
-/**
- * This controller does not use a model
- *
- * @var array
- */
 	public $uses = array();
-
-/**
- * Displays a view
- *
- * @return void
- * @throws NotFoundException When the view file could not be found
- *	or MissingViewException in debug mode.
- */
 
 	public function index() {
 
@@ -54,19 +41,25 @@ class UsersController extends AppController {
 	public function join() {
 
 		if ($this->Session->check('data')){
+
 			$this->set('data', $this->Session->read('data'));
-		} else {}
+
+		}
+
 		// postされた場合
 		if ($this->request->is('post')) {
 
 			$data = $this->request->data;
+
 			// モデルにデータをセット
 			$this->User->set($data);
+
 			// 書き直し用にsessionに保存
 			$this->Session->write('data', $data);
 
 			// 画像のアップロード
 			$path = IMAGES;
+
 			// 送信された画像を取得
 			$image = $this->request->data['User']['picture_tmp'];
 			move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
@@ -82,6 +75,7 @@ class UsersController extends AppController {
 			}
 
 		}
+
 		$this->Session->delete('data');
 
 	}
@@ -131,18 +125,17 @@ class UsersController extends AppController {
 
 			// ログインチェック
 			if ($this->Auth->login()) {
-				// ログイン通過
 
 				// emailからuser_idを取得
 				// ここの汚さセンスゼロ
 				$userData = $this->Auth->user();
-				$user_id = $this->User->find('all',
+				$user_id = $this->User->find('first',
 					array(
 						'fields' => array('User.user_id'),
 						'conditions' => array('User.email' => $userData['User']['email'])
 					)
 				);
-				$user_id = $user_id[0]['User']['user_id'];
+				$user_id = $user_id['User']['user_id'];
 
 				// Sessionの更新
 				$this->Session->write('user_id', $user_id);
@@ -155,8 +148,10 @@ class UsersController extends AppController {
 				$this->redirect('/posts/index');
 
 			} else {
+
 				$this->request->data['Login']['password'] = '';
 				$this->set('error', 'Cookieみたけどログインできなかったお');
+
 			}
 		}
 
@@ -166,18 +161,9 @@ class UsersController extends AppController {
 			// データの取得
 			$data = $this->request->data;
 
-			// 入力されたpasswordのhash化
-			// →これbeforesaveに書いたほうがスッキリする？
-			// $this->request->data['User']['password'] = $this->User->hashPassword($this->request->data['User']['password']);
-
 			// ログインチェック
 			if ($this->Auth->login($this->request->data)) {
 
-				// ログイン通過
-
-				// sessionに保存
-				// $this->Session->write('user_id', $data['member_id']);
-				// $this->Session->write('loginTime', time());
 				// 自動ログインにチェックがあった場合
 				if ($data['User']['autoLogin']) {
 					$this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
@@ -187,7 +173,7 @@ class UsersController extends AppController {
 				$this->redirect('/posts/index');
 
 			} else {
-				// ログイン通ってない
+
 				$this->request->data['User']['password'] = '';
 				$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
 			}
@@ -199,7 +185,6 @@ class UsersController extends AppController {
 	public function logout() {
 
 		$this->Auth->logout();
-
 		// session削除
 		$this->Session->destroy();
 

@@ -30,11 +30,6 @@ App::uses('AppController', 'Controller');
  */
 class PostsController extends AppController {
 
-/**
- * This controller does not use a model
- *
- * @var array
- */
 	public $uses = array('Post', 'User');
 
 	public $paginate = array(
@@ -87,6 +82,24 @@ class PostsController extends AppController {
 
 			// 投稿の重複防止
 			$this->redirect('/posts/index');
+
+		}
+
+		// GETのパラメータを拾う
+		if ($this->request->query('res')) {
+
+			$repId = $this->request->query('res');
+			$postData = $this->Post->find('first',
+				array(
+					'fields' => array('Post.message', 'Post.post_id', 'User.name'),
+					'conditions' => array('Post.post_id' => $repId)
+				)
+			);
+
+			$repMessage = '@' . $postData['User']['name'] . ' ' . $postData['Post']['message'];
+
+			$this->set(compact('repMessage', 'repId'));
+
 
 		}
 
