@@ -18,20 +18,20 @@
 <div>
 <?php echo $this->Form->end('投稿する'); ?>
 <?php foreach ($postData as $data): ?>
-<div class="msg">
-  <?php
-    if (!empty($data['User']['picture'])) {
-      echo $this->html->image($data['User']['picture'], array('width' => 48, 'height' => 48));
-    }
-  ?>
-  <p>
-    <?php echo $data['Post']['message']; ?><span class="name">（<?php echo $data['User']['name']; ?>）</span>【<?php echo $this->Html->link('Re', array('controller' => 'posts', 'action' => 'index', '?' => array('res' => $data['Post']['post_id']))); ?>】
-  </p>
-  <p class="day">
-    <?php echo $data['Post']['created']; ?>
-    【<?php echo $this->Html->link('削除', array('action' => 'index', '?' => array('delete' => $data['Post']['post_id']))); ?>】
-  </p>
-</div>
+  <div class="msg">
+    <?php
+      if (!empty($data['User']['picture'])) {
+        echo $this->html->image($data['User']['picture'], array('width' => 48, 'height' => 48));
+      }
+    ?>
+    <p>
+      <?php echo $data['Post']['message']; ?><span class="name">（<?php echo $data['User']['name']; ?>）</span>【<?php echo $this->Html->link('Re', array('controller' => 'posts', 'action' => 'index', '?' => array('res' => $data['Post']['post_id']))); ?>】
+    </p>
+    <p class="day">
+      <?php echo $this->Html->link($data['Post']['created'], array('controller' => 'posts', 'action' => 'view', '?' => array('id' => $data['Post']['post_id']))); ?>
+      【<?php echo $this->Html->link('削除', array('action' => 'index', '?' => array('delete' => $data['Post']['post_id']))); ?>】
+    </p>
+  </div>
 <?php endforeach; ?>
 <?php echo $this->Paginator->counter(); ?><br />
 <?php echo $this->Paginator->prev('前へ'); ?>

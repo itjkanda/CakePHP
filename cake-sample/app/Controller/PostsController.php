@@ -81,7 +81,7 @@ class PostsController extends AppController {
 			$repId = $this->request->query('res');
 			$postData = $this->Post->find('first',
 				array(
-					'fields' => array('Post.message', 'Post.post_id', 'User.name'),
+					'fields' => array('Post.message', 'User.name'),
 					'conditions' => array('Post.post_id' => $repId)
 				)
 			);
@@ -98,6 +98,30 @@ class PostsController extends AppController {
 			$this->Post->delete($deleteId);
 			$this->Session->setFlash('投稿を削除しました');
 			$this->redirect(array('action' => 'index'));
+
+		}
+
+	}
+
+	public function view() {
+
+		if ($this->request->query('id')) {
+
+			$postId = $this->request->query('id');
+			$postData = $this->Post->find('first',
+				array(
+					'fields' => 'User.name, User.picture, Post.created, Post.message',
+					'conditions' => array(
+						'Post.post_id' => $postId
+					)
+				)
+			);
+
+			$name = $postData['User']['name'];
+			$message = $postData['Post']['message'];
+			$date = $postData['Post']['created'];
+			$picture = $postData['User']['picture'];
+			$this->set(compact('name', 'message', 'date', 'picture'));
 
 		}
 
