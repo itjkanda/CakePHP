@@ -31,7 +31,6 @@ App::uses('AppController', 'Controller');
 class PostsController extends AppController {
 
 	public $uses = array('Post', 'User');
-
 	public $paginate = array(
 		'limit' => 5,
 		'order' => array(
@@ -58,24 +57,14 @@ class PostsController extends AppController {
 	public function index() {
 
 		// 投稿データの取得
-
-		// paginateコンポーネント使わない版
-		// $postData = $this->Post->find('all',
-		// 	array(
-		// 		'order' => array('Post.post_id DESC')
-		// 	)
-		// );
-
-		// paginateコンポーネント使う版
 		$this->set('postData', $this->getData());
 
 		// 投稿時の処理
 		if ($this->request->is('post')) {
 
-			// データの取得
 			$data = $this->request->data;
 
-			// 送信データにsessionからユーザーidを拝借
+			// sessionからユーザーidを拝借
 			$data['Post']['user_id'] = $this->Session->read('user_id');
 
 			$this->Post->save($data);
@@ -85,9 +74,10 @@ class PostsController extends AppController {
 
 		}
 
-		// GETのパラメータを拾う
+		// 返信
 		if ($this->request->query('res')) {
 
+			// パラメータから該当するユーザー名とメッセージ、postIdを取得
 			$repId = $this->request->query('res');
 			$postData = $this->Post->find('first',
 				array(
@@ -97,9 +87,17 @@ class PostsController extends AppController {
 			);
 
 			$repMessage = '@' . $postData['User']['name'] . ' ' . $postData['Post']['message'];
-
 			$this->set(compact('repMessage', 'repId'));
 
+		}
+
+		// 削除
+		if ($this->request->query('delete')) {
+
+			$deleteId = $this->request->query('delete');
+			$this->Post->delete($deleteId);
+			$this->Session->setFlash('投稿を削除しました');
+			$this->redirect(array('action' => 'index'));
 
 		}
 
