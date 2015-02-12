@@ -33,8 +33,9 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 
   public function beforeFilter() {
-    // parent::beforeFilter();
+
     $this->Auth->allow('join', 'check', 'complete');
+
   }
 
   public $components = array(
@@ -56,11 +57,6 @@ class AppController extends Controller {
       )
     ),
     'Cookie'
-  );
-
-  public $component = array(
-    'Auth',
-    'Session'
   );
 
 }

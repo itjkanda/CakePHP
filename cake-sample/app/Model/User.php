@@ -35,27 +35,6 @@ class User extends AppModel {
   public $useTable = 'users';
   public $primaryKey = 'user_id';
 
-  // ログインチェック用関数
-  public function checkLogin($email, $password) {
-    $userData = $this->find('all',
-      array(
-        'conditions' => array(
-          'email' => $email,
-          'password' => $password
-        )
-      )
-    );
-    return $userData[0]['User'];
-  }
-  // sessionにハッシュ化したパスワードを保存するのってどうなんだろ
-
-  public function hashPassword($password) {
-
-    $hashedPassword = AuthComponent::password($password);
-    return $hashedPassword;
-
-  }
-
   public $validate = array(
 
     'name' => array(
@@ -94,6 +73,60 @@ class User extends AppModel {
     );
 
     return $count == 0;
+
+  }
+
+  public function imgUpload($data) {
+
+    App::uses('CakeSession', 'Model/Datasource');
+    $Session = new CakeSession();
+    $path = IMAGES;
+    $image = $data['User']['picture_tmp'];
+    move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
+    $Session->write('img_name', $image['name']);
+    $data['User']['picture'] = $image['name'];
+
+  }
+
+
+  // コメントの書き方よくわかんね
+  /**
+   * 入力されたメールアドレスからIDを取得する
+   * @param
+   * @return
+   */
+  public function getUserIdFromEmail($userData) {
+
+    $user_id = $this->find('first',
+      array(
+        'fields' => array('User.user_id'),
+        'conditions' => array('User.email' => $userData['User']['email'])
+      )
+    );
+
+    return $user_id['User']['user_id'];
+
+  }
+
+
+  // cookie内のメールアドレスとパスワードを更新する
+  public function updateCookie() {
+
+    $this->loadComponent('Cookie');
+    // Cookieの更新
+    $this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
+    $this->Cookie->write('password', $data['User']['password'], false, '+2 weeks');
+
+  }
+
+
+  // session内のIDとログイン時間を更新する
+  public function updateSession() {
+
+    App::uses('CakeSession', 'Model/Datasource');
+    $Session = new CakeSession();
+    $Session->write('user_id', $user_id);
+    $Session->write('loginTime', time());
 
   }
 

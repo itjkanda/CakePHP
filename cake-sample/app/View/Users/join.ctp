@@ -5,21 +5,39 @@
     <?php echo $this->Form->label('User.name', 'ニックネーム'); ?>
   </dt>
   <dd>
-    <?php echo $this->Form->text('User.name', array('default' => $data['User']['name'])); ?>
+    <?php
+      if (!empty($data['User']['name'])) {
+        echo $this->Form->text('User.name', array('default' => $data['User']['name']));
+      } else {
+        echo $this->Form->text('User.name');
+      }
+    ?>
     <?php echo $this->Form->error('User.name'); ?>
   </dd>
   <dt>
     <?php echo $this->Form->label('User.email', 'メールアドレス'); ?>
   </dt>
   <dd>
-    <?php echo $this->Form->text('User.email', array('default' => $data['User']['email'])); ?>
+    <?php
+      if (!empty($data['User']['email'])) {
+        echo $this->Form->text('User.email', array('default' => $data['User']['email']));
+      } else {
+        echo $this->Form->text('User.email');
+      }
+    ?>
     <?php echo $this->Form->error('User.email'); ?>
   </dd>
   <dt>
     <?php echo $this->Form->label('User.password', 'パスワード'); ?>
   </dt>
   <dd>
-    <?php echo $this->Form->password('User.password', array('default' => $data['User']['password'])); ?>
+    <?php
+      if (!empty($data['User']['password'])) {
+        echo $this->Form->text('User.password', array('default' => $data['User']['password']));
+      } else {
+        echo $this->Form->text('User.password');
+      }
+    ?>
     <?php echo $this->Form->error('User.password'); ?>
   </dd>
   <dt>

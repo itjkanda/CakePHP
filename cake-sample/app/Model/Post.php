@@ -38,4 +38,17 @@ class Post extends AppModel {
     )
   );
 
+  public function getPostData($repId) {
+
+    $postData = $this->find('first',
+      array(
+        'fields' => array('Post.message', 'User.name'),
+        'conditions' => array('Post.post_id' => $repId)
+      )
+    );
+
+    return $postData;
+
+  }
+
 }

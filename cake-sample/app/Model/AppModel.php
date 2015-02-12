@@ -31,8 +31,14 @@ App::uses('Model', 'Model');
  */
 class AppModel extends Model {
 
-  public function getCookie() {
-
-  }
+  public function loadComponent($componentClass, $settings = array()) {
+    if (!isset($this->{$componentClass})) {
+      if (!isset($this->Components)) {
+        $this->Components = new ComponentCollection();
+      }
+      App::uses($componentClass, 'Controller/Component');
+      $this->{$componentClass} = $this->Components->load($componentClass, $settings);
+      }
+    }
 
 }

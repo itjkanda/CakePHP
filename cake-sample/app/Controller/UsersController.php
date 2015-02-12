@@ -41,9 +41,7 @@ class UsersController extends AppController {
 	public function join() {
 
 		if ($this->Session->check('data')){
-
 			$this->set('data', $this->Session->read('data'));
-
 		}
 
 		// postされた場合
@@ -51,23 +49,15 @@ class UsersController extends AppController {
 
 			$data = $this->request->data;
 
-			// モデルにデータをセット
-			$this->User->set($data);
-
 			// 書き直し用にsessionに保存
 			$this->Session->write('data', $data);
 
 			// 画像のアップロード
-			$path = IMAGES;
-
-			// 送信された画像を取得
-			$image = $this->request->data['User']['picture_tmp'];
-			move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
-			$this->Session->write('img_name', $image['name']);
-			$this->request->data['User']['picture'] = $image['name'];
-			$data = $this->request->data;
+			// user-defined function
+			$this->User->imgUpload($data);
 
 			// バリデーション
+			$this->User->set($data);
 			if ($this->User->validates()) {
 				// 変数をsessionにセット
 				$this->Session->write('data', $data);
@@ -107,6 +97,9 @@ class UsersController extends AppController {
 			// passwordのhash化
 			$this->request->data['User']['password'] = $passwordHasher->hash($this->request->data['User']['password']);
 
+			// picture
+			$this->request->data['User']['picture'] = $this->Session->read('img_name');
+
 			// データをDBに保存
 			$this->User->save($this->request->data);
 
@@ -126,26 +119,13 @@ class UsersController extends AppController {
 			// ログインチェック
 			if ($this->Auth->login()) {
 
-				// emailからuser_idを取得
-				// ここの汚さセンスゼロ
+				// ログインに使用したメールアドレスからIDを取得後、ログイン時間と一緒にSession,Cookieに保存
 				$userData = $this->Auth->user();
-				$user_id = $this->User->find('first',
-					array(
-						'fields' => array('User.user_id'),
-						'conditions' => array('User.email' => $userData['User']['email'])
-					)
-				);
-				$user_id = $user_id['User']['user_id'];
+				$user_id = $this->User->getUserIdFromEmail($userData);
+				$this->User->updateSession();
+				$this->User->updateCookie();
 
-				// Sessionの更新
-				$this->Session->write('user_id', $user_id);
-				$this->Session->write('loginTime', time());
-
-				// Cookieの更新
-				$this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
-				$this->Cookie->write('password', $data['User']['password'], false, '+2 weeks');
-
-				$this->redirect('/posts/index');
+				$this->redirect('/posts/');
 
 			} else {
 
@@ -158,17 +138,20 @@ class UsersController extends AppController {
 		// cookieが残っていなかった場合
 		if ($this->request->is('post')) {
 
-			// データの取得
 			$data = $this->request->data;
 
 			// ログインチェック
-			if ($this->Auth->login($this->request->data)) {
+			if ($this->Auth->login($data)) {
 
 				// 自動ログインにチェックがあった場合
 				if ($data['User']['autoLogin']) {
-					$this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
-					$this->Cookie->write('password', $data['User']['password'], false, '+2 weeks');
+					$this->User->updateCookie();
 				}
+
+				// ログインに使用したメールアドレスからIDを取得後、ログイン時間と一緒にSessionに保存
+				$userData = $this->Auth->user();
+				$user_id = $this->User->getUserIdFromEmail($userData);
+				$this->User->updateSession();
 
 				$this->redirect('/posts/index');
 
@@ -176,6 +159,7 @@ class UsersController extends AppController {
 
 				$this->request->data['User']['password'] = '';
 				$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
+
 			}
 
 		}
@@ -193,6 +177,8 @@ class UsersController extends AppController {
 	}
 
 	public function sample() {
+
+		// Authのテスト用
 
 	}
 

@@ -67,7 +67,6 @@ class PostsController extends AppController {
 
 			// sessionからユーザーidを拝借
 			$data['Post']['user_id'] = $this->Session->read('user_id');
-
 			$this->Post->save($data);
 
 			// 投稿の重複防止
@@ -80,12 +79,7 @@ class PostsController extends AppController {
 
 			// パラメータから該当するユーザー名とメッセージ、postIdを取得
 			$repId = $this->request->query('res');
-			$postData = $this->Post->find('first',
-				array(
-					'fields' => array('Post.message', 'User.name'),
-					'conditions' => array('Post.post_id' => $repId)
-				)
-			);
+			$postData = $this->Post->getPostData($repId);
 
 			$repMessage = '@' . $postData['User']['name'] . ' ' . $postData['Post']['message'];
 			$this->set(compact('repMessage', 'repId'));
