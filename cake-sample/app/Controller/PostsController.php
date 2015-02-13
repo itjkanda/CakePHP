@@ -58,15 +58,21 @@ class PostsController extends AppController {
 
 		// 投稿データの取得
 		$this->set('postData', $this->getData());
-		$this->set('sessionUserId', $this->Session->read('user_id'));
 
-		// 投稿時の処理
+		if ($this->Auth->loggedIn()) {
+
+			$userId = $this->Session->read('Auth')['User']['user_id'];
+			$this->set('userId', $userId);
+
+		}
+
+		//  投稿時の処理
 		if ($this->request->is('post')) {
 
 			$data = $this->request->data;
 
 			// sessionからユーザーidを拝借
-			$data['Post']['user_id'] = $this->Session->read('user_id');
+			$data['Post']['user_id'] = $this->Session->read('Auth')['User']['user_id'];
 			$this->Post->save($data);
 
 			// 投稿の重複防止
@@ -87,12 +93,24 @@ class PostsController extends AppController {
 		}
 
 		// 削除
-		if ($this->request->query('delete')) {
+		if ($this->request->query('delete') && $this->Auth->loggedIn()) {
 
 			$deleteId = $this->request->query('delete');
-			$this->Post->delete($deleteId);
-			$this->Session->setFlash('投稿を削除しました');
-			$this->redirect(array('action' => 'index'));
+			$postData = $this->Post->getPostData($deleteId);
+
+			// 投稿者のIDと削除者のIDが一致していれば削除
+			if ($postData['User']['user_id'] == $this->Session->read('Auth')['User']['user_id']) {
+
+				$this->Post->delete($deleteId);
+				$this->Session->setFlash('投稿を削除しました');
+				$this->redirect(array('action' => 'index'));
+
+			} else {
+
+				echo '削除する権限がないんだお';
+
+			}
+
 
 		}
 

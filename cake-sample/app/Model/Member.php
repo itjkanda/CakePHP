@@ -19,8 +19,8 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-App::uses('AppModel', 'Model');
-App::uses('AuthComponent', 'Controller/Component');
+App::uses('Model', 'Model');
+App::uses('Md5PasswordHasher', 'Controller/Component/Auth');
 
 /**
  * Application model for Cake.
@@ -30,11 +30,7 @@ App::uses('AuthComponent', 'Controller/Component');
  *
  * @package       app.Model
  */
-class User extends AppModel {
-
-  public $useTable = 'users';
-  public $primaryKey = 'user_id';
-  public $alias = 'User';
+class Member extends AppModel {
 
   public $validate = array(
 
@@ -64,70 +60,16 @@ class User extends AppModel {
   );
 
   // メールアドレスの重複チェック
-  public function duplicateCheck($user) {
+  public function duplicateCheck($member) {
 
     // メールアドレスを検索
     $count = $this->find('count',
       array(
-        'conditions' => array('email' => $user['email'])
+        'conditions' => array('email' => $member['email'])
       )
     );
 
     return $count == 0;
-
-  }
-
-  public function imgUpload($data) {
-
-    App::uses('CakeSession', 'Model/Datasource');
-    $Session = new CakeSession();
-    $path = IMAGES;
-    $image = $data['User']['picture_tmp'];
-    move_uploaded_file($image['tmp_name'], $path . DS . $image['name']);
-    $Session->write('img_name', $image['name']);
-    $data['User']['picture'] = $image['name'];
-
-  }
-
-
-  // コメントの書き方よくわかんね
-  /**
-   * 入力されたメールアドレスからIDを取得する
-   * @param
-   * @return
-   */
-  public function getUserIdFromEmail($userData) {
-
-    $user_id = $this->find('first',
-      array(
-        'fields' => array('User.user_id'),
-        'conditions' => array('User.email' => $userData['User']['email'])
-      )
-    );
-
-    return $user_id['User']['user_id'];
-
-  }
-
-
-  // cookie内のメールアドレスとパスワードを更新する
-  public function updateCookie($data) {
-
-    $this->loadComponent('Cookie');
-    // Cookieの更新
-    $this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
-    $this->Cookie->write('password', $data['User']['password'], false, '+2 weeks');
-
-  }
-
-
-  // session内のIDとログイン時間を更新する
-  public function updateSession($user_id) {
-
-    App::uses('CakeSession', 'Model/Datasource');
-    $Session = new CakeSession();
-    $Session->write('user_id', $user_id);
-    $Session->write('loginTime', time());
 
   }
 

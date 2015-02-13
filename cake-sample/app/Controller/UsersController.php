@@ -31,9 +31,39 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
  */
 class UsersController extends AppController {
 
+  // public $components = array(
+  //   'Session',
+  //   'Auth' => array(
+  //     'loginRedirect' => array('Controller' => 'Posts', 'action' => 'index'),
+  //     'logoutRedirect' => array('Controller' => 'Users', 'action' => 'login'),
+  //     'authenticate' => array(
+  //               'Form' => array(
+  //                   'userModel' => 'User',
+  //                   'fields' => array(
+  //                       'username' => 'email'
+  //                   ),
+  //         'passwordHasher' => array(
+  //           'className' => 'Simple',
+  //           'hashType' => 'md5'
+  //         )
+  //       )
+  //     )
+  //   ),
+  //   'Cookie'
+  // );
+
 	public $uses = array();
 
+
+
 	public function index() {
+
+	}
+
+	public function beforeFilter() {
+
+		parent::beforeFilter();
+		Security::setHash('md5');
 
 	}
 
@@ -103,63 +133,39 @@ class UsersController extends AppController {
 			// データをDBに保存
 			$this->User->save($this->request->data);
 
+			$this->Session->destroy('check');
+
 		}
 
 	}
 
 	public function login() {
 
-		// cookieが残っていた場合
-		if ($this->Cookie->check('email')) {
+		// ログイン情報が残っていた場合
+		if ($this->Auth->loggedIn()) {
 
-			// Cookieから値を取得
-			$data['User']['email'] = $this->Cookie->read('email');
-			$data['User']['password'] = $this->Cookie->read('password');
+			$this->redirect('/posts/');
 
-			// ログインチェック
-			if ($this->Auth->login()) {
+		} else {
 
-				// ログインに使用したメールアドレスからIDを取得後、ログイン時間と一緒にSession,Cookieに保存
-				$userData = $this->Auth->user();
-				$user_id = $this->User->getUserIdFromEmail($userData);
-				$this->User->updateSession();
-				$this->User->updateCookie();
+			if ($this->request->is('post')) {
 
-				$this->redirect('/posts/');
+				// ログインチェック
+				if ($this->Auth->login()) {
 
-			} else {
+					// 自動ログインにチェックがあった場合
+					if ($this->request->post['User']['autoLogin']) {
+						$this->Cookie->write('Auth.User', $this->request->data['User'], false, '+4 weeks');
+					}
 
-				$this->request->data['Login']['password'] = '';
-				$this->set('error', 'Cookieみたけどログインできなかったお');
+					$this->redirect('/posts/index');
 
-			}
-		}
+				} else {
 
-		// cookieが残っていなかった場合
-		if ($this->request->is('post')) {
+					$this->request->data['User']['password'] = '';
+					$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
 
-			$data = $this->request->data;
-
-			// ログインチェック
-			if ($this->Auth->login($data)) {
-
-				// 自動ログインにチェックがあった場合
-				if ($data['User']['autoLogin']) {
-					$this->User->updateCookie();
 				}
-
-				// ログインに使用したメールアドレスからIDを取得後、ログイン時間と一緒にSessionに保存
-				$userData = $this->Auth->user();
-				$user_id = $this->User->getUserIdFromEmail($userData);
-				$this->User->updateSession();
-
-				$this->redirect('/posts/index');
-
-			} else {
-
-				$this->request->data['User']['password'] = '';
-				$this->set('error', 'メールアドレスとパスワードの組み合わせが間違っています');
-
 			}
 
 		}
@@ -171,6 +177,7 @@ class UsersController extends AppController {
 		$this->Auth->logout();
 		// session削除
 		$this->Session->destroy();
+		$this->Cookie->delete('Auth.User');
 
 		$this->redirect(array('action' => 'login'));
 

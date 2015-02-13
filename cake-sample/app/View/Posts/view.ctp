@@ -6,6 +6,6 @@
     echo $this->Html->image($picture, array('width' => 48, 'height' => 48));
   }
 ?>
-  <p><?php echo $message; ?><span class="name"><?php echo $name; ?></span></p>
+  <p><?php echo $message; ?>（<span class="name"><?php echo $name; ?></span>）</p>
   <p class="day"><?php echo $date; ?></p>
 </div>

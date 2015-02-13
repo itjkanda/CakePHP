@@ -4,7 +4,7 @@
   <p>&raquo;<?php echo $this->Html->link('入会手続きをする', array('controller' => 'Users', 'action' => 'join')); ?></p>
 </div>
 <?php
-  if (isset($data)) {
+  if (!empty($error)) {
     echo $error;
   }
 ?>

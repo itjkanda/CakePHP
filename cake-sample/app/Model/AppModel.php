@@ -38,7 +38,7 @@ class AppModel extends Model {
       }
       App::uses($componentClass, 'Controller/Component');
       $this->{$componentClass} = $this->Components->load($componentClass, $settings);
-      }
     }
+  }
 
 }

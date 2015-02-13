@@ -29,7 +29,7 @@
     </p>
     <p class="day">
       <?php echo $this->Html->link($data['Post']['created'], array('controller' => 'posts', 'action' => 'view', '?' => array('id' => $data['Post']['post_id']))); ?>
-      <?php if ($sessionUserId == $data['Post']['user_id']): ?>
+      <?php if ($data['User']['user_id'] == $userId): ?>
       【<?php echo $this->Html->link('削除', array('action' => 'index', '?' => array('delete' => $data['Post']['post_id']))); ?>】
       <?php endif; ?>
     </p>

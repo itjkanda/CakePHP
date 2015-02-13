@@ -1,0 +1,153 @@
+@import "compass/reset/";
+@import "compass/utilities";
+
+$main_green: #EBFFE8;
+$sub_green: #5ACC17;
+$main_black: #666666;
+$main_white: #FFF;
+
+@mixin box($height) {
+	width: 670px;
+	min-width: 670px; // 670
+	height: $height;
+	-webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); 
+	border-radius: 2px;
+	background: $main_white;
+}
+
+/*IE*/
+@font-face {
+	font-family: mplus-1p-light;
+	src: url("./mplus-1p-regular.eot");
+}
+/* Firefox, Opera, Safari */
+
+@font-face {
+	font-family: mplus-1p-light;
+	src: url("./mplus-1p-regular.ttf") format("truetype");
+}
+
+
+body {
+	font-family: 'mplus-1p-regular' , sans-serif;
+	width: 100%;
+	height: auto;
+	background: $main_green;
+	color: $main_black;
+}
+
+.wrap {
+	@include clearfix;
+	margin-bottom: 30px;
+}
+
+header {
+	float: left;
+	width: 240px;
+	height: 520px;
+	margin: 45px 0 0 40px;
+	h1 {
+		font-size: 27px;
+		font-weight: normal;
+		margin: 25px 0 0 75px;
+		a {
+			text-decoration: none;
+			color: $main_black;
+		}
+	}
+	nav {
+		margin: 330px 0 0 0;
+	}
+	li {
+		color: #FFF;
+		font-size: 46px;
+		margin-right: 30px;
+		a {
+			display: block;
+			height: 55px;
+			text-align: right;
+			text-decoration: none;
+			color: $main_white;
+			-webkit-text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+			-moz-text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+			-ms-text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+			-o-text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+			text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+			transition-property: color;
+			transition-duration: 0.5s;
+			transition-delay: 0;
+			transition-timing-function: ease-out;
+			&:hover {
+				color: $sub_green;
+			}
+		}
+		a.current {
+			color: $sub_green;
+		}
+	}
+}
+
+.box {
+	float: left;
+	margin: 45px 0 5px 15px;
+	@include box(620px);
+	@include clearfix;
+}
+
+section {
+	padding: 50px 70px;
+	float: left;
+	width: 530px;
+	height: 580px;
+	h2 {
+		font-size: 46px;
+		font-weight: normal;
+		margin-bottom: 40px;
+		color: $sub_green;
+	}
+}
+
+.sectionwrap {
+	width: 2680px;
+	height: 680px;
+	margin-left: -1px;
+}
+
+.home {
+	p {
+		font-size: 16px;
+		line-height: 40px;
+		margin-top: 150px;
+	}
+}
+
+.profile {
+	p {
+		font-size: 16px;
+		line-height: 28px;
+		margin-bottom: 60px;
+	}
+}
+
+.works {
+	p {
+		font-size: 16px;
+		line-height: 28px;
+	}
+}
+
+.contact {
+	p {
+		font-size: 16px;
+		line-height: 28px;
+		margin-bottom: 30px;
+	}
+}
+
+footer {
+	height: 50px;
+	text-align: center;
+	font-size: 14px;
+}

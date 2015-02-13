@@ -42,7 +42,7 @@ class Post extends AppModel {
 
     $postData = $this->find('first',
       array(
-        'fields' => array('Post.message', 'User.name'),
+        'fields' => array('Post.message', 'User.name', 'User.user_id'),
         'conditions' => array('Post.post_id' => $repId)
       )
     );

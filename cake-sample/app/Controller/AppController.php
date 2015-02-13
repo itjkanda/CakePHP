@@ -47,7 +47,7 @@ class AppController extends Controller {
         'Form' => array(
           'userModel' => 'User',
           'fields' => array(
-            'username' => 'email'
+              'username' => 'email',
           ),
           'passwordHasher' => array(
             'className' => 'Simple',

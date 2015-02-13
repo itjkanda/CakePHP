@@ -15,7 +15,11 @@
   </dd>
   <dt>写真など</dt>
   <dd>
-    <?php echo $this->Html->image($img_name); ?>
+    <?php
+      if (!empty($img_name)) {
+        echo $this->Html->image($img_name);
+      }
+    ?>
   </dd>
 </dl>
 <div>
