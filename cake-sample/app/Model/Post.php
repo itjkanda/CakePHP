@@ -38,12 +38,13 @@ class Post extends AppModel {
     )
   );
 
-  public function getPostData($repId) {
+  // IDから投稿データを取得する
+  public function getPostData($id) {
 
     $postData = $this->find('first',
       array(
         'fields' => array('Post.message', 'User.name', 'User.user_id'),
-        'conditions' => array('Post.post_id' => $repId)
+        'conditions' => array('Post.post_id' => $id)
       )
     );
 

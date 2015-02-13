@@ -89,46 +89,4 @@ class User extends AppModel {
 
   }
 
-
-  // コメントの書き方よくわかんね
-  /**
-   * 入力されたメールアドレスからIDを取得する
-   * @param
-   * @return
-   */
-  public function getUserIdFromEmail($userData) {
-
-    $user_id = $this->find('first',
-      array(
-        'fields' => array('User.user_id'),
-        'conditions' => array('User.email' => $userData['User']['email'])
-      )
-    );
-
-    return $user_id['User']['user_id'];
-
-  }
-
-
-  // cookie内のメールアドレスとパスワードを更新する
-  public function updateCookie($data) {
-
-    $this->loadComponent('Cookie');
-    // Cookieの更新
-    $this->Cookie->write('email', $data['User']['email'], false, '+2 weeks');
-    $this->Cookie->write('password', $data['User']['password'], false, '+2 weeks');
-
-  }
-
-
-  // session内のIDとログイン時間を更新する
-  public function updateSession($user_id) {
-
-    App::uses('CakeSession', 'Model/Datasource');
-    $Session = new CakeSession();
-    $Session->write('user_id', $user_id);
-    $Session->write('loginTime', time());
-
-  }
-
 }
