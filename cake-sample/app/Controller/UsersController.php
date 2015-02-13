@@ -31,30 +31,7 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
  */
 class UsersController extends AppController {
 
-  // public $components = array(
-  //   'Session',
-  //   'Auth' => array(
-  //     'loginRedirect' => array('Controller' => 'Posts', 'action' => 'index'),
-  //     'logoutRedirect' => array('Controller' => 'Users', 'action' => 'login'),
-  //     'authenticate' => array(
-  //               'Form' => array(
-  //                   'userModel' => 'User',
-  //                   'fields' => array(
-  //                       'username' => 'email'
-  //                   ),
-  //         'passwordHasher' => array(
-  //           'className' => 'Simple',
-  //           'hashType' => 'md5'
-  //         )
-  //       )
-  //     )
-  //   ),
-  //   'Cookie'
-  // );
-
 	public $uses = array();
-
-
 
 	public function index() {
 
@@ -175,10 +152,7 @@ class UsersController extends AppController {
 	public function logout() {
 
 		$this->Auth->logout();
-		// session削除
 		$this->Session->destroy();
-		$this->Cookie->delete('Auth.User');
-
 		$this->redirect(array('action' => 'login'));
 
 	}
