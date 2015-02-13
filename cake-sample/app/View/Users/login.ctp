@@ -23,10 +23,6 @@
     <?php echo $this->Form->password('password', array('default' => '')); ?>
   </dd>
   <dt>ログイン情報の記録</dt>
-  <dd>
-    <?php echo $this->Form->checkbox('autoLogin'); ?>
-    <?php echo $this->Form->label('autoLogin', '次回からは自動的にログインする'); ?>
-  </dd>
 </dl>
 <div>
   <?php echo $this->Form->submit('ログインする'); ?>
