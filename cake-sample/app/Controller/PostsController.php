@@ -39,6 +39,11 @@ class PostsController extends AppController {
 	);
 
 	public function getData() {
+            /**
+             * ページネート系は基本的にModelに紐づく処理なので
+             * この処理もPostModelに書いて
+             * PostModelから配列を返してもらうような処理にしましょう
+             */
 		$data = $this->paginate('Post',
 			array(
 				'Post.post_id not' => null
@@ -61,6 +66,17 @@ class PostsController extends AppController {
 
 		if ($this->Auth->loggedIn()) {
 
+                    /**
+                     * Authコンポーネントが直接プライマリーキーを提供してくれる便利メソッドを持っているので
+                     * それを使おうこれ以降のuserのidに関しては全て
+                     * それとこのページはAuthでallowされて無いはずなので
+                     * ログインチェックは不要です
+                     * 後このuser_idってviewのどこで使ってるのかな？
+                     * 
+                     * $this->Session->read('Auth')['User']['user_id'];
+                     * 
+                     * これの書き方についてはちょっと調べて、考えてみます
+                     */
 			$userId = $this->Session->read('Auth')['User']['user_id'];
 			$this->set('userId', $userId);
 
@@ -68,7 +84,15 @@ class PostsController extends AppController {
 
 		//  投稿時の処理
 		if ($this->request->is('post')) {
-
+                    /**
+                     * 飛んできたクエリなどによってif文で制御わけるのはいいけど
+                     * その結果indexのメソッドが肥大化してしまっています
+                     * if文の中身をprivateメソッドにまとめたり
+                     * 配列の生成をModelにやらせたりしてダイエットさせてください
+                     * ただしsaveやリダイレクトの処理をprivateメソッドにさせるとindexをみただけでは何が行われているのかわからないため
+                     * saveやリダイレクトなどのコアな処理はindexメソッド内部で行うこと
+                     * 
+                     */
 			$data = $this->request->data;
 
 			// sessionからユーザーidを拝借
@@ -76,7 +100,14 @@ class PostsController extends AppController {
 			$this->Post->save($data);
 
 			// 投稿の重複防止
+                        /**
+                         * リダイレクトしてここで処理が完了しているはずなので
+                         * return をつけよう
+                         * こうすることでこのコードを読んだ人が
+                         * postの際の処理がここで完結していると一発でわかるようになります(redirectなど途中で処理が終わる際は全てreturn つけてあげましょう)
+                         */
 			$this->redirect('/posts/index');
+                        
 
 		}
 
@@ -129,7 +160,14 @@ class PostsController extends AppController {
 					)
 				)
 			);
-
+                        
+                        /**
+                         * これpostDataでsetしてview側で展開してやればいいんじゃないかな
+                         * $postData[Post][message]みたいな感じで
+                         * 
+                         * またpostDataにデータがなかった場合(デタラメなid打ち込まれた場合など)
+                         * の処理を書かないとエラーになります
+                         */
 			$name = $postData['User']['name'];
 			$message = $postData['Post']['message'];
 			$date = $postData['Post']['created'];

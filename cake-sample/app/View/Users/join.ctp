@@ -6,6 +6,16 @@
   </dt>
   <dd>
     <?php
+      /**
+       * 実はformヘルパー使ってフォームを生成していると
+       * $this->request->dataに値が入っているかどうか判定して
+       * 勝手にvalueを入れてくれるのです(ない場合はvalueは空白になる)
+       * フォーム1個出すのにviewでif文書きまくるとHTMlのコーダーに殴られるので
+       * 極力避けましょう
+       * 
+       * $this->request->dataに値を設置してFormのdefaultを削除してみてください
+       * 
+       */
       if (!empty($data['User']['name'])) {
         echo $this->Form->text('User.name', array('default' => $data['User']['name']));
       } else {

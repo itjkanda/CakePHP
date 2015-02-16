@@ -79,6 +79,14 @@ class User extends AppModel {
 
   public function imgUpload($data) {
 
+    /**
+     * モデルでSessionの書き込みを行うと
+     * このモデルのメソッドが利用されているコントローラ側で
+     * 流れを負いにくくなるため
+     * このメソッドはファイルをアップロードして
+     * ファイル名を返す程度にし
+     * Sessionの書き込みはコントローラ側で行うようにしましょう
+     */
     App::uses('CakeSession', 'Model/Datasource');
     $Session = new CakeSession();
     $path = IMAGES;

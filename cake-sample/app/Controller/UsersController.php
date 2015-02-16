@@ -36,8 +36,12 @@ class UsersController extends AppController {
 	public function index() {
 
 	}
-
+        
+        
 	public function beforeFilter() {
+            /**
+             * beforeFilterはすべてのメソッドの一番上に書きましょう
+             */
 
 		parent::beforeFilter();
 		Security::setHash('md5');
@@ -46,7 +50,16 @@ class UsersController extends AppController {
 
 	// 会員登録系
 	public function join() {
-
+                /**
+                 * この方法だとdataが存在しない場合がある
+                 * つまりview側でif文をかかなきゃいけないので
+                 * 非推奨です
+                 *　
+                 * どう対応するかちょっと考えてわからなかったらjoin.ctp見てみてください
+                 * 
+                 * またこの処理はpostされてvalidation通った際は不要な処理なはずなので
+                 * 記載位置を考えてみて(PHPの変数はやたらメモリ食うので、極力不要な定義はしない)
+                 */
 		if ($this->Session->check('data')){
 			$this->set('data', $this->Session->read('data'));
 		}
@@ -78,6 +91,13 @@ class UsersController extends AppController {
 	}
 
 	public function check() {
+            
+                /**
+                 * Sessionが存在しない状態でここにアクセスするとSesionが存在しないので
+                 * View側でdata と img_nameが存在いない状態になっちゃいうね
+                 * 
+                 * どう対応しようか？
+                 */
 
 		// sessionからデータをセット
 		if ($this->Session->check('data')) {
@@ -108,6 +128,16 @@ class UsersController extends AppController {
 			$this->request->data['User']['picture'] = $this->Session->read('img_name');
 
 			// データをDBに保存
+                        
+                        /**
+                         * この方式だと
+                         * postされてる内容にuser_idとかプライマリーキーを入れられていると(開発者ツールでuser_idとかのツール使って勝手にフォーム生成されたりして)
+                         * UPDATE文になり、勝手にレコードを書き換えることが可能だったりします
+                         * 
+                         * cakeでsaveを利用するとinsertとupdateをプライマリーキーで判断してくれちゃうので
+                         * insertをしたい時はpostデータから必要なデータだけをとりだしてsave
+                         * もしくはpostデータからプライマリーキーの配列を削除してsaveをするようにしましょう
+                         */
 			$this->User->save($this->request->data);
 
 			$this->Session->destroy('check');
@@ -119,6 +149,27 @@ class UsersController extends AppController {
 	public function login() {
 
 		// ログイン情報が残っていた場合
+            
+                /**
+                 * このページの機能はログアウトを除き
+                 * ログインしている場合は不要なため
+                 * ログインチェックをbeforeFilterで行ったほうがすっきりしそう
+                 * また、beforeFilterで行わない場合も
+                 * 
+                 * ログインしたいたらredirectしてそこで処理を終わらせたほうが見やすいコードになる
+                 * 
+                 * )
+                 * if ($this->Auth->loggedIn()) {
+                 *      $this->redirect('/posts/');
+                 *      return;
+                 * }
+                 * 
+                 * if ($this->request->is('post')) {
+                 * ～～～～～～～～～～～～～
+                 * 
+                 * みたいな感じ
+                 * 
+                 */
 		if ($this->Auth->loggedIn()) {
 
 			$this->redirect('/posts/');
